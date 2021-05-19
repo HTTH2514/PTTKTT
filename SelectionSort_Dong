@@ -1,0 +1,64 @@
+#include <stdio.h>
+
+typedef int keytype;
+typedef float othertype;
+typedef struct {
+    keytype key;
+    othertype otherfields;
+} recordtype;
+
+void Swap (recordtype* a, recordtype* b) {
+    recordtype temp;
+    temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void SelectionSort (recordtype a[], int n) {
+    int i,j,lowindex;
+    keytype lowkey;
+    for(i=0;i<=n-2;i++) {
+        lowindex=i;
+        lowkey=a[i].key;
+        for(j=i+1;j<=n-1;j++) {
+            if(a[j].key<lowkey) {
+                lowindex=j;
+                lowkey=a[j].key;
+            }
+        }
+        Swap(&a[i],&a[lowindex]);
+    }
+}
+
+void Read_File (recordtype a[], int* n) {
+    FILE *f;
+    f = fopen("sepxep.txt","r");
+    int i=0;
+    if (f!=NULL)
+    while (!feof(f)) {
+        fscanf(f,"%d%f",&a[i].key,&a[i].otherfields);
+        i++;
+    }
+    else printf("File loi!\n");
+    fclose(f);
+    *n=i;
+}
+
+void in (recordtype a[], int n) {
+    for (int i=0; i<n; i++)
+        printf ("\n%3d%5d%8.2f",i+1,a[i].key,a[i].otherfields);
+}
+
+int main () {
+    int n;
+    recordtype a[100];
+    Read_File(a,&n);
+    printf("Thuat toan Selection Sort");
+    printf("\n\n");
+    printf("Day truoc khi sap xep:");
+    in(a,n);
+    SelectionSort(a,n);
+    printf("\nDay sau khi sap xep:");
+    in(a,n);
+    return 0;
+}
