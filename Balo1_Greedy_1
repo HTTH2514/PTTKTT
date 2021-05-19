@@ -33,7 +33,7 @@ void Swap (DoVat *a, DoVat *b) {
 }
 
 void BubbleSort (DoVat *dsdv, int n) {
-    for(int i=0;i<n;i++)
+    for(int i=0;i<n-1;i++)
         for(int j=n-1;j>=i+1;j--)
             if(dsdv[j].DG>dsdv[j-1].DG) 
                 Swap(&dsdv[j],&dsdv[j-1]);
