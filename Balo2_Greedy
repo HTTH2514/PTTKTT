@@ -54,7 +54,7 @@ void in(DoVat* dsdv, float W, int n) {
     printf("|---|------------------|---------|---------|---------|---------|-----------|\n");
     printf("|STT|    Ten Do Vat    | T Luong |  G Tri  |  D Gia  | S Luong | Phuong An |\n");
     for(int i=0;i<n;i++) {
-        printf("|%2d|%-18s|%9.2f|%9.2f|%9.2f|%5d|%6d|\n",dsdv[i].TenDV,dsdv[i].TL,dsdv[i].GT,dsdv[i].DG,dsdv[i].SL,dsdv[i].PA);
+        printf("|%2d|%-18s|%9.2f|%9.2f|%9.2f|%5d|%6d|\n",i+1,dsdv[i].TenDV,dsdv[i].TL,dsdv[i].GT,dsdv[i].DG,dsdv[i].SL,dsdv[i].PA);
         TongTL += dsdv[i].PA*dsdv[i].TL;
         TongGT += dsdv[i].PA*dsdv[i].GT;
     }
