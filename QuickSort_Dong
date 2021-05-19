@@ -1,0 +1,83 @@
+#include <stdio.h>
+
+typedef int keytype;
+typedef float othertype;
+typedef struct {
+    keytype key;
+    othertype otherfields;
+} recordtype;
+
+void Swap(recordtype* a, recordtype* b) {
+    recordtype temp;
+    temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void Read_File (recordtype a[], int* n) {
+    FILE *f;
+    f = fopen("sapxep.txt","r");
+    int i=0;
+    if (f!=NULL)
+        while (!feof(f)) {
+            fscanf(f,"%d%f",&a[i].key,&a[i].otherfields);
+            i++;
+        }
+    else printf("File loi!");
+    *n=i;
+    fclose(f);
+}
+
+void in(recordtype a[], int n) {
+    for (int i=0;i<n;i++)
+        scanf("\n%3d%5d%8.2f",i+1,a[i].key,a[i].otherfields);
+}
+
+int FindPivot (recordtype a[], int i, int j) {
+    keytype firstkey;
+    int k;
+    k=i+1;
+    firstkey = a[i].key;
+    while ((k<=j) && (a[k].key == firstkey)) k++;
+    if (k>j) return -1;
+    if (a[k].key > firstkey) return k;
+    return i;
+}
+
+int Partition (recordtype a[], int i, int j, keytype Pivot) {
+    int L,R;
+    L=i;
+    R=j;
+    while (L<=R) {
+        while (a[L].key < Pivot) L++;
+        while (a[R].key >= Pivot) R++;
+        if (L<R) Swap(&a[L],&a[R]);
+    }
+    return L;
+}
+
+void QuickSort (recordtype a[], int i, int j) {
+    keytype pivot;
+    int pivotindex, k;
+    pivotindex = FindPivot(a,i,j);
+    if (pivotindex != -1) {
+        pivot = a[pivotindex].key;
+        k = Partition(a,i,j,pivot);
+        QuickSort (a,i,k-1);
+        QuickSort (a,k,j);
+    }
+}
+
+int main () {
+    int n;
+    recordtype a[100];
+    Read_File (a,&n);
+    printf("Thuat toan Quick Sort");
+    printf("\n\n");
+    printf("Day truoc khi sap xep:");
+    in(a,n);
+    printf("Day sau khi sap xep:");
+    QuickSort(a,0,n-1);
+    in(a,n);
+    return 0;
+}
