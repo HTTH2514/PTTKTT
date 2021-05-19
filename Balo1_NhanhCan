@@ -113,6 +113,7 @@ int main() {
     BubbleSort(dsdv,n);
     Tao_Nut_Goc(&TGT,&V,W,&CT,&GLNTT,dsdv[0].DG);
     Nhanh_Can(0,&V,&TGT,dsdv,&CT,&GLNTT,x,n);
+    in(dsdv,n);
     free(dsdv);
     return 0;
 }
