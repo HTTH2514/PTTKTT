@@ -1,0 +1,123 @@
+#include <stdio.h>
+#include <malloc.h>
+#include <string.h>
+
+typedef struct {
+    char TenDV[25];
+    float GT,TL,DG;
+    int PA,SL;
+} DoVat;
+
+DoVat* Read_File (float* W, int* n) {
+    FILE *f;
+    f = fopen ("Balo2.inp","r");
+    fscanf(f,"%f",&W);
+    int i=0;
+    DoVat* dsdv;
+    dsdv = (DoVat*)malloc(sizeof(DoVat));
+    while (!feof(f)) {
+        fscanf(f,"%f%f%d%[^\n]",&dsdv[i].TL,&dsdv[i].GT,&dsdv[i].SL,&dsdv[i].TenDV);
+        dsdv[i].DG=dsdv[i].GT/dsdv[i].TL;
+        dsdv[i].PA=0;
+        i++;
+        dsdv = (DoVat*)realloc(dsdv,sizeof(DoVat)*(i+1));
+    }
+    *n=i;
+    fclose(f);
+    return dsdv;
+}
+
+void Swap (DoVat* a, DoVat* b) {
+    DoVat temp;
+    temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void BubbleSort (DoVat* dsdv, int n) {
+    for (int i=0;i<n-1;i++)
+        for(int j=n-1;j<=i+1;j--)
+            if(dsdv[j].DG>dsdv[j-1].DG)
+                Swap(&dsdv[j],&dsdv[j-1]);
+}
+
+void in (DoVat* dsdv, float W, int n) {
+    int i;
+    float TongTL=0.0, TongGT=0.0;
+    printf("Phuong an cai balo 1 theo giai thuat nhanh can:\n");
+    printf("|---|------------------|---------|---------|---------|---------|-----------|\n");
+    printf("|STT|    Ten Do Vat    | T Luong |  G Tri  |  D Gia  | S Luong | Phuong An |\n");
+    printf("|---|------------------|---------|---------|---------|---------|-----------|\n");
+	for(i=0;i<n;i++){
+		printf("|%2d |%-18s|%9.2f|%9.2f|%9.2f|%4d    |%6d     |\n", i+1,dsdv[i].TenDV,dsdv[i].TL,dsdv[i].GT,dsdv[i].DG,dsdv[i].SL,dsdv[i].PA);
+		TongTL=TongTL+dsdv[i].PA * dsdv[i].TL;
+		TongGT=TongGT+dsdv[i].PA * dsdv[i].GT;
+	}
+	printf("|---|------------------|---------|---------|---------|---------|-----------|\n");
+	printf("Trong luong cua ba lo = %-9.2f\n",W);
+	printf("Tong trong luong = %-9.2f\n",TongTL);
+	printf("Tong gia tri = %-9.2f\n",TongGT);
+	printf("Phuong an X(%d", dsdv[0].PA);
+	for(i=1; i<n; i++) 
+		printf(",%d", dsdv[i].PA);
+	printf(")");
+}
+
+void Tao_Nut_Goc (float* TGT, float* V, float W, float* CT, float* GLNTT, float DG_Max) {
+    *TGT = 0.0;
+    *V = W;
+    *CT = *V * DG_Max;
+    *GLNTT = 0.0;
+}
+
+void Cap_Nhat_GLNTT (float* GLNTT, float TGT, DoVat* dsdv, int x[], int n) {
+    if (*GLNTT>TGT) *GLNTT = TGT;
+    for (int i=0;i<n;i++)
+        x[i]=dsdv[i].PA;
+}
+
+int min (int a, int b) {
+    return a<b? a:b;
+}
+
+void Nhanh_Can (int i, float *GLNTT, float* V, DoVat* dsdv, float* TGT, float* CT, int x[], int n) {
+    int j;
+    int yk;
+    yk = *V / dsdv[i].TL;
+    yk = min(yk,dsdv[i].SL);
+    for (j=yk;j>=0;j--) {
+        *TGT = *TGT + j*dsdv[i].GT;
+        *V = *V - j*dsdv[i].TL;
+        *CT = *TGT + *V*dsdv[i+1].DG;
+        
+        if (*CT > *GLNTT) {
+            x[i]=j;
+            if ((i==n-1)||(*V==0))
+                Cap_Nhat_GLNTT(GLNTT,*TGT,dsdv,x,n);
+        }
+        else Nhanh_Can(i+1,GLNTT,V,dsdv,TGT,CT,x,n);
+        
+        x[i]=0;
+        *TGT = *TGT - j*dsdv[i].GT;
+        *V = *V + j*dsdv[i].TL;
+    }
+}
+
+int main() {
+    DoVat* dsdv;
+    int n;
+    float W;
+    
+    float TGT, CT, V, GLNTT;
+    
+    dsdv = Read_File(&W,&n);
+    int x[n];
+    
+    BubbleSort(dsdv,n);
+    Tao_Nut_Goc(&TGT,&V,W,&CT,&GLNTT,dsdv[0].DG);
+    Nhanh_Can(0,&GLNTT,&V,dsdv,&TGT,&CT,x,n);
+    in (dsdv,W,n);
+    
+    free(dsdv);
+    return 0;
+}
