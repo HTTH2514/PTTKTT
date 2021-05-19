@@ -1,0 +1,61 @@
+#include <stdio.h>
+
+typedef int keytype;
+typedef float othertype;
+typedef struct {
+    keytype key;
+    othertype otherfields;
+} recordtype;
+
+void Swap (recordtype* a, recordtype* b) {
+    recordtype temp;
+    temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void Read_File (recordtype a[], int* n) {
+    FILE *f;
+    f = fopen("sapxep_dong.txt","r");
+    int i=0;
+    if(f!=NULL)
+        while (!feof(f)) {
+            fscanf(f,"%d%f",&a[i].key,&a[i].otherfields);
+            i++;
+        }
+    else printf("File loi!");
+    fclose(f);
+    *n=i;
+}
+
+void in (recordtype a[], int n) {
+    for (int i=0;i<n;i++)
+        scanf("\n%3d%5d%8.2f",i+1,a[i].key,a[i].otherfields);
+}
+
+void InsertionSort (recordtype a[],int n) {
+    int i,j;
+    for(i=1;i<n;i++) {
+        j=i;
+        while ((j>0) && (a[j].key<a[j-1].key)) {
+            Swap(&a[j],&a[j-1]);
+            j--;
+        }
+    }
+}
+
+int main() {
+    int n;
+    recordtype a[100];
+    Read_File(a,&n);
+    printf("Thuat toan Insertion Sort");
+    printf("\n\n");
+    printf("Day truoc khi sap xep:");
+    in(a,n);
+    printf("\nDay sau khi sap xep:");
+    InsertionSort(a,n);
+    in(a,n);
+    return 0;
+}
+            
+        
